@@ -20,8 +20,6 @@ node_modules/
 *.avi
 *.mkv
 
-# Tab-separated values files
-*.tsv
 
 # Archives
 *.zip
