@@ -1,6 +1,7 @@
 // frontend/src/services/apiService.js
 
 import axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL;
 
 // Create an axios instance with default settings
 const api = axios.create({
@@ -40,6 +41,50 @@ export const login = async (username, password) => {
   } catch (error) {
     console.error("Login error:", error.response?.data || error.message);
     throw error.response?.data || error;
+  }
+};
+
+export const searchMovies = async (filters) => {
+  try {
+    const response = await api.get(`${API_URL}/movies/search`, {
+      params: filters,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+export const searchPersons = async (filters) => {
+  try {
+    const response = await api.get(`${API_URL}/people/search`, {
+      params: filters,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching persons:", error);
+    throw error;
+  }
+};
+
+export const getAllPersons = async () => {
+  try {
+    const response = await api.get(`${API_URL}/people/all`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching persons:", error);
+    throw error;
+  }
+};
+
+export const getAllMovies = async () => {
+  try {
+    const response = await api.get(`${API_URL}/movies/all`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
   }
 };
 

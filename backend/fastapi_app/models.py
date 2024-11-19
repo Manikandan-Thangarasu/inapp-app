@@ -1,12 +1,10 @@
-# backend/fastapi_app/models.py
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
 Base = declarative_base()
 
 class Movie(Base):
-    __tablename__ = 'movie'
+    __tablename__ = 'movies_movie'
 
     tconst = Column(String, primary_key=True)
     titleType = Column(String)
@@ -19,7 +17,7 @@ class Movie(Base):
     genres = Column(String)
 
 class Person(Base):
-    __tablename__ = 'people'
+    __tablename__ = 'movies_person'
 
     nconst = Column(String, primary_key=True)
     primaryName = Column(String)

@@ -35,8 +35,8 @@ const App = () => {
 
         <Route
           path="/dashboard"
-          // element={isAuthenticated() ? <Dashboard /> : <Navigate to="/" />}
-          element={<Dashboard />}
+          element={isAuthenticated() ? <Dashboard /> : <Navigate to="/" />}
+          // element={<Dashboard />}
         />
       </Routes>
     </Router>

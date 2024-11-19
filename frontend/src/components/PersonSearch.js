@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Grid, Box, Typography } from "@mui/material";
-import { searchPersons } from "../services/movieService";
+import { searchPersons, getAllPersons } from "../services/apiService";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -22,11 +22,26 @@ const PersonSearch = () => {
   const handleSearch = async () => {
     try {
       const persons = await searchPersons(filters);
-      setPersonData(persons);
+      setPersonData(persons || []);
     } catch (error) {
       console.error("Error searching for persons:", error);
     }
   };
+
+  //initial load of data
+  const loadInitialData = async () => {
+    try {
+      const persons = await getAllPersons();
+      setPersonData(persons || []);
+    } catch (error) {
+      console.error("Error searching for persons:", error);
+    }
+  }
+
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
   // Column definitions for the AgGrid table
   const columnDefs = [
@@ -118,7 +133,7 @@ const PersonSearch = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={personData}
+          rowData={personData.length ? personData : []}
           pagination={true}
           style={{ borderRadius: "8px" }}
         />

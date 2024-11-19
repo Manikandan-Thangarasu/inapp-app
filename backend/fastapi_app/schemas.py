@@ -1,29 +1,22 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+class MovieResponse(BaseModel):
+    title: Optional[str]  # Optional in case of NULL
+    year_released: Optional[int]
+    type: Optional[str]
+    genre: Optional[str]
 
-class Movie(BaseModel):
-    title: str
-    year_released: int
-    type: str
-    genre: str
-    people_associated: List[str]
+    class Config:
+        from_attributes = True
 
-class Person(BaseModel):
-    name: str
-    birth_year: int
-    profession: str
-    known_for_titles: List[str]
+class PersonResponse(BaseModel):
+    nconst: str
+    primaryName: str
+    birthYear: Optional[int] = None
+    deathYear: Optional[int] = None
+    primaryProfession: Optional[str] = None
+    knownForTitles: Optional[str] = None
 
-class MovieSearchResponse(BaseModel):
-    title: str
-    year_released: str
-    genre: str
-    people_associated: List[str]
-
-class PersonSearchResponse(BaseModel):
-    name: str
-    birth_year: Optional[str]
-    profession: str
-    known_for_titles: List[str]
-
+    class Config:
+        from_attributes = True

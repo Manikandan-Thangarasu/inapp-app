@@ -1,6 +1,4 @@
-// frontend/src/components/MovieSearch.js
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -12,7 +10,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material";
-import { searchMovies } from "../services/movieService";
+import { searchMovies, getAllMovies } from "../services/apiService";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -21,7 +19,6 @@ const MovieSearch = () => {
   const [filters, setFilters] = useState({
     year: "",
     genre: "",
-    personName: "",
     type: "All",
   });
   const [movieData, setMovieData] = useState([]);
@@ -33,18 +30,31 @@ const MovieSearch = () => {
   const handleSearch = async () => {
     try {
       const movies = await searchMovies(filters);
-      setMovieData(movies);
+      setMovieData(movies || []);
     } catch (error) {
       console.error("Error searching for movies:", error);
     }
   };
 
+  // Initial movie data load for the table
+  const loadInitialData = async () => {
+    try {
+      const movies = await getAllMovies();
+      setMovieData(movies || []);
+    } catch (error) {
+      console.error("Error loading initial movies:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
   const columnDefs = [
-    { headerName: "Title", field: "primaryTitle", flex: 1 },
-    { headerName: "Year Released", field: "startYear", flex: 1 },
-    { headerName: "Type", field: "titleType", flex: 1 },
-    { headerName: "Genre", field: "genres", flex: 1 },
-    { headerName: "People Associated", field: "people_associated", flex: 1 },
+    { headerName: "Title", field: "title", flex: 1 },
+    { headerName: "Year Released", field: "year_released", flex: 1 },
+    { headerName: "Type", field: "type", flex: 1 },
+    { headerName: "Genre", field: "genre", flex: 1 },
   ];
 
   return (
@@ -79,19 +89,6 @@ const MovieSearch = () => {
             label="Genre"
             name="genre"
             value={filters.genre}
-            onChange={handleChange}
-            variant="outlined"
-            InputProps={{
-              style: { borderRadius: "8px" },
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Person Name"
-            name="personName"
-            value={filters.personName}
             onChange={handleChange}
             variant="outlined"
             InputProps={{
@@ -143,12 +140,23 @@ const MovieSearch = () => {
       </Button>
 
       {/* AgGrid Table */}
-      <Box className="ag-theme-alpine" sx={{ height: 400, width: "100%" }}>
+      <Box
+        className="ag-theme-alpine"
+        sx={{
+          height: 400,
+          width: "100%",
+          // overflow: "hidden",
+        }}
+      >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={movieData}
+          rowData={movieData.length > 0 ? movieData : []}
           pagination={true}
+          paginationPageSize={10}
           domLayout="autoHeight"
+          paginationNumberFormatter={(params) => {
+            return `[ ${params.value}]`;
+          }}
           style={{ borderRadius: "8px" }}
         />
       </Box>
